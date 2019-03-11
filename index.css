@@ -1,0 +1,15 @@
+:root {
+    --color1: rgb(115, 45, 150);
+    --color2: rgb(6, 98, 204);
+    --color3: rgb(20, 252, 205);
+    --color4: transparent;
+}
+.third {
+    width: 33.33%;
+}
+.\!h100 {
+    height: 100%;
+}
+.\!h90 {
+    height: 90%;
+}

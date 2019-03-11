@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://bundle.run/xlsx@0.14.1?name=XLSX"></script> <!-- xlsx library  -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/PiethonCoder/clean.css/versions/clean@1.5.css">
+    <meta charset="UTF-8">
+    <title>csv parse</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.6.3/papaparse.min.js"></script>
+</head>
+
+<body>
+    <main class="vh100 w100">
+        <section class="w100 h10 bcolor-white2 margin20-left-right*">
+
+            <div class="button2 center h50 font-montserrat2 z100" id="insurence_button">Upload File</div>
+
+            <input id="bond_files" type="file" class="!opacity">
+            <input id="insurence_files" type="file" class="!opacity">
+        </section>
+        <section class="w100 vh90 bcolor-white flex">
+
+            <div class="!h100 third bcolor-white flex-column">
+                <div class="h10 w100">
+                    <h1 class="fcolor1">Bonds</h1>
+                </div>
+                <div id="bonds" class="!h90 w100 grid5 gap5" style="overflow:auto">
+                    <div class="col3">
+                        <p>Managment Company</p>
+                    </div>
+                    <div>
+                        <p>Amount</p>
+                    </div>
+                    <div>
+                        <p>% Of Total</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="!h100 third bcolor-white flex-column" style="border-right:1px solid var(--color1);border-left:1px solid var(--color1);">
+                <div class="h10 w100">
+                    <h1 class="fcolor1">Under Blanket</h1>
+                </div>
+                <div id="blanket" class="!h90 w100 grid5 gap5" style="overflow:auto;">
+                    <div class="col3">
+                        <p>Managment Company</p>
+                    </div>
+                    <div>
+                        <p>Amount</p>
+                    </div>
+                    <div>
+                        <p>% Of Total</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class=" !h100 third bcolor-white flex-column">
+                <div class="h10 w100">
+                    <h1 class="fcolor1">Not Under Blanket</h1>
+                </div>
+                <div id="non-blanket" class="!h90 w100 grid5 gap5" style="overflow:auto">
+                    <div class="col3">
+                        <p>Managment Company</p>
+                    </div>
+                    <div>
+                        <p>Amount</p>
+                    </div>
+                    <div>
+                        <p>% Of Total</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
