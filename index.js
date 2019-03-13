@@ -52,7 +52,7 @@ function prep() {
     insured_output.push(["Managment Company:", "Amount:", "% Of Total:"]);
     for (var row in insured_array) {
         var temp = []
-        temp.push(insured_array[row][5])
+        temp.push(insured_array[row][6])
         temp.push(formatter.format(insured_array[row][8]))
         temp.push(insured_array[row][9])
         insured_output.push(temp)
@@ -65,7 +65,7 @@ function prep() {
     uninsured_output.push(["Managment Company:", "Amount:", "% Of Total:"]);
     for (var row in uninsured_array) {
         var temp = []
-        temp.push(uninsured_array[row][5])
+        temp.push(uninsured_array[row][6])
         temp.push(formatter.format(uninsured_array[row][8]))
         temp.push(uninsured_array[row][9])
         uninsured_output.push(temp)
@@ -103,12 +103,12 @@ const formatter = new Intl.NumberFormat('en-US', {
 
 function injectGrid() {
     for (var row in insured_array) {
-        $("#blanket").append(`<div class='col3 flex border1-1 @bcolor1'><p>${insured_array[row][5]}</p></div>`)
+        $("#blanket").append(`<div class='col3 flex border1-1 @bcolor1'><p>${insured_array[row][6]}</p></div>`)
         $("#blanket").append(`<div class='flex border1-2 @bcolor2'><p>${formatter.format(insured_array[row][8])}</p></div>`)
         $("#blanket").append(`<div class='flex border1-3 @bcolor3'><p>${insured_array[row][9]}</p></div>`)
     }
     for (var row in uninsured_array) {
-        $("#non-blanket").append(`<div class='col3 flex border1-1 @bcolor1'><p>${uninsured_array[row][5]}</p></div>`)
+        $("#non-blanket").append(`<div class='col3 flex border1-1 @bcolor1'><p>${uninsured_array[row][6]}</p></div>`)
         $("#non-blanket").append(`<div class='flex border1-2 @bcolor2'><p>${formatter.format(uninsured_array[row][8])}</p></div>`)
         $("#non-blanket").append(`<div class='flex border1-3 @bcolor3'><p>${uninsured_array[row][9]}</p></div>`)
     }
@@ -178,8 +178,8 @@ function resultCallback(data) {
             insurence_count++
             for (var array_index in data) {
                 var insured_type = data[array_index][2]
-                if (data[array_index][5] == undefined) {
-                    data[array_index][5] = ""
+                if (data[array_index][6] == undefined) {
+                    data[array_index][6] = ""
                 } //if the company name is undefined 
 
                 /********  find the price for each row**********/
@@ -263,7 +263,7 @@ function resultCallback(data) {
             $("#bonds").append(`<div class='col2 flex'> <h1 class="fcolor2"><span class="fcolor1 font-montserrat2">Total Percentage:</span><br>${bond_percent}%</h1></div>`)
 
             for (var row in bond_array) {
-                $("#bonds").append(`<div class="col3 flex border1-1 @bcolor1">${bond_array[row][5]}</div>`)
+                $("#bonds").append(`<div class="col3 flex border1-1 @bcolor1">${bond_array[row][6]}</div>`)
                 $("#bonds").append(`<div class="flex border1-2 @bcolor2">${formatter.format(bond_array[row][3])}</div>`)
                 $("#bonds").append(`<div class="flex border1-3 @bcolor3">${bond_array[row][8]}</div>`)
             }
