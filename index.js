@@ -4,16 +4,19 @@
 var insurence_count = 0;
 var bond_count = 0;
 
+var bond_object = {}
 var bond_array = []
 var bond_percent = 0;
 var bond_total = 0;
 var bond_output = []
 
+var insured_object = {}
 var insured_array = []
 var insured_percent = 0;
 var insured_total = 0;
 var insured_output = []
 
+var uninsured_object = {}
 var uninsured_array = []
 var uninsured_percent = 0;
 var uninsured_total = 0;
@@ -21,9 +24,6 @@ var uninsured_output = []
 
 var insurence_total = 0
 
-function makePage() {
-
-}
 
 function check() {
     if (insurence_count > 0 && bond_count > 0) {
@@ -116,37 +116,47 @@ function injectGrid() {
 }
 
 function organize() {
-    for (var row in insured_array) {
-        var percentage = (insured_array[row][8] / insurence_total) * 100
+    for (var row in insured_object) {
+        var array = insured_object[row]
+
+        var percentage = (array[8] / insurence_total) * 100
         percentage = (Math.round(percentage * 100) / 100) //2 decimal places
 
-        var amount = insured_array[row][8]
+        var amount = array[8]
 
         insured_total += (isNaN(amount)) ? 0 : amount
         insured_percent += (isNaN(percentage)) ? 0 : percentage
 
-        insured_array[row].push(percentage + "%")
+        insured_object[row].push(percentage + "%")
+
+        insured_array.push(insured_object[row]) // add to array for sorting 
     }
-    for (var row in uninsured_array) {
-        var percentage = (uninsured_array[row][8] / insurence_total) * 100
+    for (var row in uninsured_object) {
+        var array = uninsured_object[row]
+
+        var percentage = (array[8] / insurence_total) * 100
         percentage = (Math.round(percentage * 100) / 100) //2 decimal places
 
-        var amount = uninsured_array[row][8]
+        var amount = array[8]
 
         uninsured_total += (isNaN(amount)) ? 0 : amount
         uninsured_percent += (isNaN(percentage)) ? 0 : percentage
 
-        uninsured_array[row].push(percentage + "%")
+        uninsured_object[row].push(percentage + "%")
+
+        uninsured_array.push(uninsured_object[row]) // add to array for sorting 
     }
 
-    insured_array.sort((function(index) {
-        return function(a, b) {
+
+
+    insured_array.sort((function (index) {
+        return function (a, b) {
             return (a[index] === b[index] ? 0 : (a[index] > b[index] ? -1 : 1));
         };
     })(8)); // 8 is the index
 
-    uninsured_array.sort((function(index) {
-        return function(a, b) {
+    uninsured_array.sort((function (index) {
+        return function (a, b) {
             return (a[index] === b[index] ? 0 : (a[index] > b[index] ? -1 : 1));
         };
     })(8)); // 8 is the index
@@ -177,7 +187,7 @@ function resultCallback(data) {
         if (result) {
             insurence_count++
             for (var array_index in data) {
-                var insured_type = data[array_index][2]
+                var insured_type = (data[array_index][2] != undefined) ? data[array_index][2] : "null"
                 if (data[array_index][6] == undefined) {
                     data[array_index][6] = ""
                 } //if the company name is undefined 
@@ -196,29 +206,38 @@ function resultCallback(data) {
                 insured_amount = parseFloat(insured_amount) // convert string to number 
 
                 if (!isNaN(insured_amount)) { // if its a valid number 
-                    if (insured_amount == undefined) {
-                        console.log('found')
+                    if (insured_amount != undefined) {
+                        data[array_index][8] = insured_amount
+                        insurence_total += insured_amount
                     }
-                    data[array_index][8] = insured_amount
-                    insurence_total += insured_amount
+
+                } else {
+                    insured_amount = 0
+                    data[array_index][8] = 0
                 }
 
                 /********end**********/
 
 
-                if (insured_type == undefined || insured_type == "") {
-                    uninsured_array.push(data[array_index])
-                    continue
-                }
 
-                if (insured_type.toLowerCase().startsWith("pcb")) {
-                    insured_array.push(data[array_index])
+                if (insured_type.toLowerCase().startsWith("pcb")) { // insured || uninsured
+                    if (insured_object[data[array_index][6]]) {
+                        insured_object[data[array_index][6]][8] += insured_amount
+                       
+                    } else {
+                        insured_object[data[array_index][6]] = data[array_index]
+                    }
                 } else {
-                    uninsured_array.push(data[array_index])
+                    if (uninsured_object[data[array_index][6]]) {
+                        uninsured_object[data[array_index][6]][8] += insured_amount
+                      
+                    } else {
+                        uninsured_object[data[array_index][6]] = data[array_index]
+                    }
                 }
 
             }
-            console.log((insured_array.length + uninsured_array.length == data.length)) //are all rows sorted 
+     
             organize()
         }
 
@@ -237,7 +256,18 @@ function resultCallback(data) {
                 var amount = parseFloat(data[row][3].slice(1))
                 bond_total += amount
                 data[row][3] = amount
-                bond_array.push(data[row])
+
+                if (bond_object[data[row][5]]) {
+                    bond_object[data[row][5]][3] += amount 
+                } else {
+                    bond_object[data[row][5]] = data[row]
+                }
+
+
+            }
+            
+            for(var i in bond_object){ //add items from oject to array 
+                bond_array.push(bond_object[i])
             }
 
             //get %
@@ -250,8 +280,8 @@ function resultCallback(data) {
             bond_percent = Math.round(bond_percent * 100) / 100
 
             //sort
-            bond_array.sort((function(index) {
-                return function(a, b) {
+            bond_array.sort((function (index) {
+                return function (a, b) {
                     return (a[index] === b[index] ? 0 : (a[index] > b[index] ? -1 : 1));
                 };
             })(3)); // 3 is the index
@@ -263,7 +293,7 @@ function resultCallback(data) {
             $("#bonds").append(`<div class='col2 flex'> <h1 class="fcolor2"><span class="fcolor1 font-montserrat2">Total Percentage:</span><br>${bond_percent}%</h1></div>`)
 
             for (var row in bond_array) {
-                $("#bonds").append(`<div class="col3 flex border1-1 @bcolor1">${bond_array[row][6]}</div>`)
+                $("#bonds").append(`<div class="col3 flex border1-1 @bcolor1">${bond_array[row][5]}</div>`)
                 $("#bonds").append(`<div class="flex border1-2 @bcolor2">${formatter.format(bond_array[row][3])}</div>`)
                 $("#bonds").append(`<div class="flex border1-3 @bcolor3">${bond_array[row][8]}</div>`)
             }
@@ -277,34 +307,34 @@ function resultCallback(data) {
 function parse() {
     $('input[type=file]').parse({
         config: {
-            complete: function(data) {
+            complete: function (data) {
                 resultCallback(data)
             }
         },
-        before: function(file, inputElem) {
+        before: function (file, inputElem) {
             // executed before parsing each file begins;
             // what you return here controls the flow
         },
-        error: function(err, file, inputElem, reason) {
+        error: function (err, file, inputElem, reason) {
             console.log(err)
         },
-        complete: function(result, file) {
+        complete: function (result, file) {
             console.log('done')
         }
     });
 }
 
 
-$("#bond_button").click(function() {
+$("#bond_button").click(function () {
     $("#bond_files").click()
 })
-$("#insurence_button").click(function() {
+$("#insurence_button").click(function () {
     $("#insurence_files").click()
 })
 
-$("#bond_files").change(function() {
+$("#bond_files").change(function () {
     parse()
 })
-$("#insurence_files").change(function() {
+$("#insurence_files").change(function () {
     parse()
 })
